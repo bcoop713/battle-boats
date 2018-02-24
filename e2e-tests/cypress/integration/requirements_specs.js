@@ -1,8 +1,13 @@
 describe('Game Requirements', function() {
   it('Has Two Boards', function() {
     cy.visit('http://localhost:3000');
-    cy.get('.board').should(grids => {
+    cy.get('[data-cy=board]').should(grids => {
       expect(grids).to.have.length(2);
+    });
+  });
+  it('has 64 cells per board', function() {
+    cy.get('[data-cy=cell]').should(grids => {
+      expect(grids).to.have.length(128);
     });
   });
   //  A board is an 8x8 grid for a total of 64 units

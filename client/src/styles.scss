@@ -1,0 +1,11 @@
+.board {
+  padding: 10px;
+}
+.row {
+  display: flex;
+}
+.cell {
+  background: red;
+  width: 30px;
+  height: 30px;
+}

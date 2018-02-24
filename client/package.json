@@ -7,8 +7,13 @@
     "dev": "parcel ./src/index.html -p 3000"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.66.0",
     "jest": "^22.4.2",
-    "parcel-bundler": "^1.6.2"
+    "node-sass": "^4.7.2",
+    "parcel-bundler": "^1.6.2",
+    "postcss-modules": "^1.1.0"
   },
   "dependencies": {
     "react": "^16.2.0",
