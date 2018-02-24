@@ -1,0 +1,1 @@
+{"dependencies":[{"name":"./index.js","dynamic":true}],"generated":{"html":"<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <title>Battle Boats</title>\n  </head>\n  <body>\n    <div id=\"app\"></div>\n<script src=\"/dist/f374d386a364318e4a232400610f2381.js\"></script>\n  </body>\n</html>\n"},"hash":"b34f2103207c2fb80ad391c535c5c9df","cacheData":{}}
