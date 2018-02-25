@@ -5,16 +5,7 @@ import R from 'ramda';
 
 const wss = new WebSocket.Server({ port: 9000 });
 
-type State = {
-  players: Array<Player>
-};
-
-type Player = {
-  id: string,
-  number: number
-};
-
-let appState: State = {
+let appState = {
   players: []
 };
 

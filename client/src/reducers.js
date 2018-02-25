@@ -1,17 +1,7 @@
-// @flow
-
-export type State = {
-  player: Player
-};
-
-export type Player = {
-  id: string,
-  number: number
-};
-
 const initialState: State = {
   player: {
-    playerNumber: 1
+    id: '',
+    number: 1
   }
 };
 

@@ -1,11 +1,9 @@
-// @flow
 import React from 'react';
 import ReactDOM from 'react-dom';
 import HeaderComp from '../components/Header.js';
-import type { State } from '../reducers.js';
 import { connect } from 'react-redux';
 
-const mapStateToProps = (state: State) => {
+const mapStateToProps = state => {
   console.log('state', state);
   return state.player;
 };

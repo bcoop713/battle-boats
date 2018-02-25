@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import PlayField from './PlayField.js';
 import Header from '../containers/Header.js';

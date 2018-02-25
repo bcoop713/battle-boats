@@ -1,8 +1,6 @@
-// @flow
 import React from 'react';
-import type { Player } from '../reducers.js';
 
-function Header({ number }: Player) {
+function Header({ number }) {
   return (
     <section className="hero is-primary">
       <div className="hero-body">
