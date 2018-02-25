@@ -1,19 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import { flMiddleware, flReducer } from './adapters/folktale.js';
 import reducers from './reducers.js';
 import App from './components/App.js';
-import { initial, noOp } from './actions.js';
+import action from './actions.js';
 import Styles from './styles.scss';
 require('bulma/bulma.sass');
 
-let store = createStore(reducers);
+let store = createStore(flReducer(reducers), applyMiddleware(flMiddleware));
 
 const socket = new WebSocket('ws://localhost:9000');
 socket.addEventListener('message', event => {
   const action = messageMapper(event);
-  console.log('action', action);
+  console.log('action being sent', action);
   store.dispatch(action);
 });
 
@@ -26,9 +27,10 @@ function messageMapper(event) {
   console.log(message);
   switch (message.type) {
     case 'INITIAL':
-      return initial(message.player);
+      console.log('cumong', action.Initial(message.player));
+      return action.Initial(message.player);
     default:
-      return noOp();
+      return action.NoOp();
   }
 }
 

@@ -1,4 +1,5 @@
 import { messageMapper } from '../src/index.js';
+import actions from '../src/actions.js';
 
 test('message mapper', () => {
   const message = {
@@ -6,7 +7,7 @@ test('message mapper', () => {
     player: { id: '456', player: { number: 1, id: 'asdf' } }
   };
   const event = { data: JSON.stringify(message) };
-  const expectedAction = { type: 'INITIAL', player: message.player };
+  const expectedAction = actions.Initial(message.player);
   const receivedAction = messageMapper(event);
   expect(receivedAction).toEqual(expectedAction);
 });

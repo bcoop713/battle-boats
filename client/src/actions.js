@@ -1,12 +1,12 @@
-export const initial = player => {
-  return {
-    type: 'INITIAL',
-    player: player
-  };
-};
+import { union } from 'folktale/adt/union';
 
-export const noOp = () => {
-  return {
-    type: 'NOOP'
-  };
-};
+const action = union('Action', {
+  Initial(player) {
+    return { player };
+  },
+  NoOp() {
+    return {};
+  }
+});
+
+export default action;

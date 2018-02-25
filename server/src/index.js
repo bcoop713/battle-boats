@@ -17,6 +17,7 @@ wss.on('connection', function connection(ws) {
   });
   updateState(newState);
   ws.send(messageOut);
+  ws.on('error', () => console.log('errored'));
 });
 
 function handleConnection(ws, state) {

@@ -5,15 +5,14 @@ const initialState: State = {
   }
 };
 
-function reducers(state = initialState, action: any) {
-  switch (action.type) {
-    case 'INITIAL':
-      return { ...state, player: action.player };
-    case 'NOOP':
-      return state;
-    default:
-      return state;
+function reducers(state = initialState, action) {
+  if (!action.matchWith) {
+    return state;
   }
+  return action.matchWith({
+    Initial: ({ player }) => ({ ...state, player }),
+    NoOp: () => state
+  });
 }
 
 export default reducers;
