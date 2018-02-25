@@ -32,7 +32,7 @@ function handleConnection(ws, state) {
   const newPlayer = { id: uuid(), number: state.players.length + 1 };
   const newPlayerList = R.append(newPlayer, state.players);
   const newState = R.assoc('players', newPlayerList, state);
-  const messageOut = JSON.stringify(newPlayer);
+  const messageOut = JSON.stringify({ type: 'INITIAL', player: newPlayer });
   return { messageOut, newState };
 }
 
