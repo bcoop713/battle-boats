@@ -1,11 +1,11 @@
-const initialState: State = {
+const initialState = {
   player: {
     id: '',
     number: 1
   }
 };
 
-function reducers(state = initialState, action) {
+function reducers(state, action) {
   if (!action.matchWith) {
     return state;
   }
@@ -15,4 +15,4 @@ function reducers(state = initialState, action) {
   });
 }
 
-export default reducers;
+export { reducers, initialState };

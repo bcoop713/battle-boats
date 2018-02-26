@@ -1,6 +1,7 @@
 // @flow
 import WebSocket from 'ws';
 import uuid from 'uuid/v1';
+import actions from './actions.js';
 import R from 'ramda';
 
 const wss = new WebSocket.Server({ port: 9000 });
@@ -24,7 +25,8 @@ function handleConnection(ws, state) {
   const newPlayer = { id: uuid(), number: state.players.length + 1 };
   const newPlayerList = R.append(newPlayer, state.players);
   const newState = R.assoc('players', newPlayerList, state);
-  const messageOut = JSON.stringify({ type: 'INITIAL', player: newPlayer });
+  const messageOut = JSON.stringify(actions.Initial(newPlayer));
+  console.log(messageOut);
   return { messageOut, newState };
 }
 

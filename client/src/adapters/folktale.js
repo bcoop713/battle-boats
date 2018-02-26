@@ -1,5 +1,4 @@
 const flMiddleware = store => next => action => {
-  console.log('middleware', action);
   // TODO add better type check
   if (!action.type) {
     const type = action[Symbol.for('@@folktale:adt:tag')].toUpperCase();
@@ -12,9 +11,9 @@ const flMiddleware = store => next => action => {
 const flReducer = reducers => {
   return (state, action) => {
     if (action.payload) {
-      reducers(state, action.payload);
+      return reducers(state, action.payload);
     } else {
-      reducers(state, action);
+      return reducers(state, action);
     }
   };
 };
