@@ -1,19 +1,35 @@
-import React from 'react';
-import Styles from '../styles.scss';
+import React from "react";
+import Styles from "../styles.scss";
+import { map } from "ramda";
 
-function Board() {
-  const cell = (
-    <div className={Styles.cell} data-cy="cell">
-      Cell
-    </div>
-  );
-  const row = <div className={Styles.row}>{Array(8).fill(cell)}</div>;
-  const grid = Array(8).fill(row);
+function Cell(onMouseUp, onMouseDown, x, y) {
+  const coord = { x, y };
   return (
-    <div className={Styles.board} data-cy="board">
-      {grid}
+    <div
+      onMouseUp={() => onMouseUp(coord)}
+      onMouseDown={() => onMouseDown(coord)}
+      key={x * 10 + y}
+      className={Styles.cell}
+    >
+      Cell
     </div>
   );
 }
 
-export default Board;
+function Row(row) {
+  return <div className={Styles.row}>{row}</div>;
+}
+
+function MyBoard({ onMouseDown, onMouseUp }) {
+  const xAxis = [1, 2, 3, 4, 5, 6, 7, 8];
+  const yAxis = [1, 2, 3, 4, 5, 6, 7, 8];
+  const matrix = map(
+    y => map(x => Cell(onMouseUp, onMouseDown, x, y), xAxis),
+    yAxis
+  );
+
+  const grid = map(Row, matrix);
+  return <div className={Styles.board}>{grid}</div>;
+}
+
+export default MyBoard;

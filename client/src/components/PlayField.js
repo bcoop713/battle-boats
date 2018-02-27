@@ -1,15 +1,12 @@
-import React from 'react';
-import Board from './Board.js';
+import React from "react";
+import MyBoard from "../containers/MyBoard.js";
 
 function PlayField() {
   return (
     <div className="container">
       <div id="board-container" className="columns">
         <div className="column">
-          <Board />
-        </div>
-        <div className="column">
-          <Board />
+          <MyBoard />
         </div>
       </div>
     </div>
