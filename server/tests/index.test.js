@@ -1,4 +1,8 @@
-import { getPlayerNumber, handleNewPlayer } from '../src/index.js';
+import {
+  getPlayerNumber,
+  handleNewPlayer,
+  getUpdatedState
+} from '../src/index.js';
 import Maybe from 'folktale/maybe';
 import Result from 'folktale/result';
 import actions from '../src/actions.js';
@@ -40,5 +44,18 @@ describe('handleNewPlayer', () => {
     const expectedState = appState;
     expect(messageOut).toBe(expectedMessageOut);
     expect(newState).toEqual(expectedState);
+  });
+});
+
+describe('getUpdatedState', () => {
+  test('ignore newStates that dont validate', () => {
+    const newState = undefined;
+    const oldState = { key: 'value' };
+    expect(getUpdatedState(oldState, newState)).toEqual(oldState);
+  });
+  test('if state is valid, return it', () => {
+    const newState = { key: 'value2' };
+    const oldState = { key: 'value' };
+    expect(getUpdatedState(oldState, newState)).toEqual(newState);
   });
 });

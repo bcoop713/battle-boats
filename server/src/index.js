@@ -16,13 +16,13 @@ wss.on('connection', function connection(ws, req) {
   ws.on('message', function incoming(message) {
     handleMessage(message, ws);
   });
-  updateState(newState);
+  const updatedState = getUpdatedState(appState, newState);
+  setState(updatedState);
   ws.send(messageOut);
   ws.on('error', () => console.log('errored'));
 });
 
 function handleConnection(ws, req, state) {
-  console.log('CON STATE', state);
   const playerNumber = getPlayerNumber(req.url);
   return playerNumber.matchWith({
     Just: ({ value }) => handleReturingPlayer(value, state),
@@ -49,8 +49,15 @@ function handleReturingPlayer(playerNumber, state) {
   return { messageOut, newState: state };
 }
 
-function updateState(newState) {
-  console.log('NEW STATE', JSON.stringify(newState, null, 2));
+function getUpdatedState(oldState, newState) {
+  if (newState) {
+    return newState;
+  } else {
+    return oldState;
+  }
+}
+
+function setState(newState) {
   appState = newState;
 }
 
@@ -64,4 +71,4 @@ function getPlayerNumber(url) {
   return resultToMaybe(result);
 }
 
-export { getPlayerNumber, handleNewPlayer };
+export { getPlayerNumber, handleNewPlayer, getUpdatedState };
