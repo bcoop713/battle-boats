@@ -1,14 +1,7 @@
 import React from 'react';
-import PlayField from './PlayField.js';
-import Header from '../containers/Header.js';
-
+import Switcher from '../containers/Switcher.js';
 function App() {
-  return (
-    <div>
-      <Header />
-      <PlayField />
-    </div>
-  );
+  return <Switcher />;
 }
 
 export default App;

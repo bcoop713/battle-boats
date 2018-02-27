@@ -1,8 +1,8 @@
+import { loop, Cmd } from 'redux-loop';
+import { storeLocally } from './commands.js';
+
 const initialState = {
-  player: {
-    id: '',
-    number: 1
-  }
+  loading: true
 };
 
 function reducers(state, action) {
@@ -10,7 +10,12 @@ function reducers(state, action) {
     return state;
   }
   return action.matchWith({
-    Initial: ({ player }) => ({ ...state, player }),
+    Initial: ({ player }) => {
+      return loop(
+        { ...state, loading: false, player },
+        Cmd.run(storeLocally, { args: ['playerNumber', player.number] })
+      );
+    },
     NoOp: () => state
   });
 }

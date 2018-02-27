@@ -2,22 +2,31 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import logger from 'redux-logger';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import { flMiddleware, flReducer } from './adapters/folktale.js';
 import { fromSocketHandler } from './adapters/from-socket.js';
 import { reducers, initialState } from './reducers.js';
+import { install } from 'redux-loop';
+import nullableToMaybe from 'folktale/conversions/nullable-to-maybe';
 import App from './components/App.js';
 import action from './actions.js';
 import Styles from './styles.scss';
 require('bulma/bulma.sass');
 
-let store = createStore(
-  flReducer(reducers),
-  initialState,
-  applyMiddleware(flMiddleware, logger)
-);
+const enhancer = compose(applyMiddleware(flMiddleware, logger), install());
 
-const socket = new WebSocket('ws://localhost:9000');
+const store = createStore(flReducer(reducers), initialState, enhancer);
+
+function socketURL() {
+  const base = 'ws://localhost:9000';
+  const playerID = nullableToMaybe(localStorage.getItem('playerNumber'));
+  return playerID.matchWith({
+    Just: ({ value }) => base + '?playerNumber=' + value,
+    Nothing: () => base
+  });
+}
+
+const socket = new WebSocket(socketURL());
 socket.addEventListener('message', event => {
   fromSocketHandler(event, store);
 });

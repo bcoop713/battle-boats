@@ -14,7 +14,6 @@ function serializer(event, union) {
 }
 
 function actionMapper(ServerActionResult) {
-  console.log(ServerActionResult);
   // Handle default action incase of error from websocket
   const serverAction = ServerActionResult.matchWith({
     Ok: ({ value }) => value,

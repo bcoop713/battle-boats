@@ -27,7 +27,8 @@
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
-    "redux-devtools": "^3.4.1"
+    "redux-devtools": "^3.4.1",
+    "redux-loop": "^4.2.4"
   },
   "jest": {
     "moduleNameMapper": {
