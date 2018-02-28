@@ -13,6 +13,15 @@ const action = union('Action', {
   BoatPlacementSuccess(coord) {
     return { coord };
   },
+  SendAttack(coord) {
+    return { coord };
+  },
+  AttackMissed(enemyNumber, coord) {
+    return { enemyNumber, coord };
+  },
+  AttackHit(enemyNumber, coord) {
+    return { enemyNumber, coord };
+  },
   NoOp() {
     return {};
   }

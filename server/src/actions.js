@@ -7,6 +7,12 @@ const actions = union('ServerAction', {
   BoatPlacementSuccess(coords) {
     return { coords };
   },
+  AttackHit(enemyNumber, coord) {
+    return { enemyNumber, coord };
+  },
+  AttackMissed(enemyNumber, coord) {
+    return { enemyNumber, coord };
+  },
   NoOp() {
     return {};
   }

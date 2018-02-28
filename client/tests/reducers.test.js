@@ -1,4 +1,8 @@
-import { validateCoords, getAllSegments } from '../src/reducers.js';
+import {
+  validateCoords,
+  getAllSegments,
+  validateAttack
+} from '../src/reducers.js';
 import { Success, Failure } from 'folktale/validation';
 
 describe('validateCoords', () => {
@@ -40,5 +44,75 @@ describe('getAllSegments', () => {
     const testCoords = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
     const expectedCoords = [{ x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }];
     expect(getAllSegments(testCoords)).toEqual(expectedCoords);
+  });
+});
+
+describe('validateAttack', () => {
+  it('should disalow redundant attacks', () => {
+    const sentHits = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const sentMisses = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const receivedHits = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const receivedMisses = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const attackCoord = { x: 1, y: 1 };
+    const validationResult = validateAttack(
+      attackCoord,
+      sentHits,
+      sentMisses,
+      receivedHits,
+      receivedHits,
+      1
+    );
+    expect(Failure.hasInstance(validationResult)).toBeTruthy();
+  });
+  it('should disalow out of turn attacks for player 1', () => {
+    const sentHits = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const sentMisses = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const receivedHits = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const receivedMisses = [{ x: 7, y: 7 }];
+    const playerNumber = 1;
+    const attackCoord = { x: 8, y: 8 };
+    const validationResult = validateAttack(
+      attackCoord,
+      sentHits,
+      sentMisses,
+      receivedHits,
+      receivedMisses,
+      playerNumber
+    );
+    expect(Failure.hasInstance(validationResult)).toBeTruthy();
+  });
+  it('should disalow out of turn attacks for player 2', () => {
+    const sentHits = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const sentMisses = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const receivedHits = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const receivedMisses = [{ x: 7, y: 7 }, { x: 5, y: 5 }];
+    const playerNumber = 2;
+    const attackCoord = { x: 8, y: 8 };
+    const validationResult = validateAttack(
+      attackCoord,
+      sentHits,
+      sentMisses,
+      receivedHits,
+      receivedMisses,
+      playerNumber
+    );
+    expect(Failure.hasInstance(validationResult)).toBeTruthy();
+  });
+  it('should allow valid attacks', () => {
+    const sentHits = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const sentMisses = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const receivedHits = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const receivedMisses = [{ x: 5, y: 5 }];
+    const playerNumber = 2;
+    const attackCoord = { x: 8, y: 8 };
+    const validationResult = validateAttack(
+      attackCoord,
+      sentHits,
+      sentMisses,
+      receivedHits,
+      receivedMisses,
+      playerNumber
+    );
+    expect(Success.hasInstance(validationResult)).toBeTruthy();
   });
 });

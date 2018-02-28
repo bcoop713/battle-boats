@@ -2,7 +2,16 @@ import { loop, Cmd } from 'redux-loop';
 import { storeLocally, msgToServer, sendToServer } from './commands.js';
 import Maybe from 'folktale/maybe';
 import { Success, Failure } from 'folktale/validation';
-import { map, concat, head, insert, flatten, intersection } from 'ramda';
+import {
+  map,
+  concat,
+  contains,
+  append,
+  head,
+  insert,
+  flatten,
+  intersection
+} from 'ramda';
 
 const initialState = socket => ({
   socket,
@@ -16,7 +25,12 @@ const initialLoadedState = (storedState, socket) => ({
   boatsWaiting: storedState.boatsWaiting,
   boatPlacementCoords: [],
   boatCoords: storedState.boatCoords,
-  errors: Success()
+  errors: Success(),
+  instructions: Maybe.Nothing(),
+  sentHits: [],
+  sentMisses: [],
+  recievedHits: [],
+  recievedMisses: []
 });
 
 function validateCoords(coords, boatsWaiting, boatCoords) {
@@ -54,6 +68,34 @@ function validateCoords(coords, boatsWaiting, boatCoords) {
   } else {
     return Failure(['Something horribel happened']);
   }
+}
+
+function validateAttack(
+  coord,
+  sentHits,
+  sentMisses,
+  receivedHits,
+  receivedMisses,
+  playerNumber
+) {
+  const allAttacksSent = concat(sentHits, sentMisses);
+  const uniqueAttack = () => {
+    return !contains(coord, allAttacksSent)
+      ? Success()
+      : Failure(['You already attacked this spot']);
+  };
+  const myTurn = () => {
+    const allAttacks = concat(
+      allAttacksSent,
+      concat(receivedHits, receivedMisses)
+    );
+    return allAttacks.length % 2 === playerNumber - 1
+      ? Success()
+      : Failure(['It is not your turn']);
+  };
+  return Success()
+    .concat(uniqueAttack())
+    .concat(myTurn());
 }
 
 // Boat was represented as 2 points, this transforms that into 3 segments
@@ -114,8 +156,50 @@ function reducers(state, action) {
         Cmd.none
       );
     },
+    SendAttack: ({ coord }) => {
+      const enemyNumber = state.player.number === 1 ? 2 : 1;
+      const validAttack = validateAttack(
+        coord,
+        state.sentHits,
+        state.sentMisses,
+        state.recievedHits,
+        state.recievedMisses
+      );
+      return validAttack.matchWith({
+        Success: () => {
+          const messageOut = msgToServer.SendAttack(enemyNumber, coord);
+          return loop(
+            state,
+            Cmd.run(sendToServer, { args: [state.socket, messageOut] })
+          );
+        },
+        Failure: _ => loop({ ...state, errors: validAttack }, Cmd.none)
+      });
+    },
+    AttackHit: ({ enemyNumber, coord }) => {
+      const newState =
+        enemyNumber === state.player.number
+          ? { ...state, recievedHits: append(coord, state.recievedHits) }
+          : { ...state, sentHits: append(coord, state.sentHits) };
+
+      return loop(newState, Cmd.none);
+    },
+    AttackMissed: ({ enemyNumber, coord }) => {
+      const newState =
+        enemyNumber === state.player.number
+          ? { ...state, recievedMisses: append(coord, state.recievedMisses) }
+          : { ...state, sentMisses: append(coord, state.sentMisses) };
+
+      return loop(newState, Cmd.none);
+    },
     NoOp: () => state
   });
 }
 
-export { reducers, initialState, validateCoords, getAllSegments };
+export {
+  reducers,
+  initialState,
+  validateCoords,
+  getAllSegments,
+  validateAttack
+};

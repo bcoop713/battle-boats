@@ -4,18 +4,19 @@ import MyBoardComp from '../components/Board.js';
 import { connect } from 'react-redux';
 import actions from '../actions.js';
 
-const mapStateToProps = ({ boatCoords }) => {
-  return { boatCoords };
+const mapStateToProps = ({ boatCoords, recievedHits, recievedMisses }) => {
+  return { boatCoords, hits: recievedHits, misses: recievedMisses };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onMouseUp: coord => {
+    boatPlacementEnd: coord => {
       dispatch(actions.BoatPlacementEnd(coord));
     },
-    onMouseDown: coord => {
+    boatPlacementStart: coord => {
       dispatch(actions.BoatPlacementStart(coord));
-    }
+    },
+    sendAttack: coord => {}
   };
 };
 

@@ -43,8 +43,8 @@ describe('serializer', () => {
 describe('actionMapper', () => {
   test('Initial to Initial mapping', () => {
     const player = { id: 'asdf', number: 1 };
-    const serverAction = Result.Ok(ServerActions.Initial(player));
-    const mappedAction = actions.Initial(player);
+    const serverAction = Result.Ok(ServerActions.Initial(5, [], player));
+    const mappedAction = actions.Initial(player, 5, []);
     expect(mappedAction).toEqual(actionMapper(serverAction));
   });
   test('garbage to NoOp mapping', () => {

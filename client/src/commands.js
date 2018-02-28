@@ -13,6 +13,9 @@ function sendToServer(socket, message) {
 const msgToServer = union('MessagesOut', {
   PlaceBoat(playerNumber, boatCoords) {
     return { playerNumber, boatCoords };
+  },
+  SendAttack(enemyNumber, coord) {
+    return { enemyNumber, coord };
   }
 }).derive(derivations.serialization);
 

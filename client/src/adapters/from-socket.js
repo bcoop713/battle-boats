@@ -25,6 +25,10 @@ function actionMapper(ServerActionResult) {
     Initial: ({ player, boatsWaiting, boatCoords }) =>
       actions.Initial(player, boatsWaiting, boatCoords),
     BoatPlacementSuccess: ({ coords }) => actions.BoatPlacementSuccess(coords),
+    AttackMissed: ({ enemyNumber, coord }) =>
+      actions.AttackMissed(enemyNumber, coord),
+    AttackHit: ({ enemyNumber, coord }) =>
+      actions.AttackHit(enemyNumber, coord),
     NoOp: () => actions.NoOp()
   });
 }

@@ -14,7 +14,9 @@ const initialClientState = {
 
 let appState = {
   players: [],
-  clientState: [initialClientState, initialClientState]
+  clientState: [initialClientState, initialClientState],
+  hits: [],
+  misses: []
 };
 
 // Start the server
@@ -29,7 +31,7 @@ wss.on('connection', function connection(ws, req) {
     const updatedState = getUpdatedState(appState, newState);
     console.log('x', JSON.stringify(updatedState));
     setState(updatedState);
-    handleMessageOut(ws, { responseMsg });
+    handleMessageOut(ws, wss, { responseMsg, broadcastMsg });
   });
   const updatedState = getUpdatedState(appState, newState);
   setState(updatedState);
@@ -37,8 +39,16 @@ wss.on('connection', function connection(ws, req) {
   ws.on('error', () => console.log('errored'));
 });
 
-function handleMessageOut(ws, { responseMsg }) {
+function handleMessageOut(ws, wss, { responseMsg, broadcastMsg }) {
   ws.send(JSON.stringify(responseMsg));
+  if (broadcastMsg) {
+    console.log('BROADCAST MSG', broadcastMsg);
+    wss.clients.forEach(client => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(broadcastMsg));
+      }
+    });
+  }
 }
 
 function handleConnection(ws, req, state) {
@@ -118,6 +128,20 @@ function mapToActions(action, state) {
       const newState = { ...state, clientState: newClientState };
       const responseMsg = actions.BoatPlacementSuccess(boatCoords);
       return { newState, responseMsg };
+    },
+    SendAttack: ({ enemyNumber, coord }) => {
+      const enemyBoatCoords = state.clientState[enemyNumber - 1].boatCoords;
+      const hit = R.any(
+        boatCoord => R.equals(boatCoord, coord),
+        R.flatten(enemyBoatCoords)
+      );
+      const broadcastMsg = hit
+        ? actions.AttackHit(enemyNumber, coord)
+        : actions.AttackMissed(enemyNumber, coord);
+      const newState = hit
+        ? { ...state, hits: R.append({ enemyNumber, coord }, state.hits) }
+        : { ...state, misses: R.append({ enemyNumber, coord }, state.misses) };
+      return { newState, broadcastMsg };
     }
   });
 }
