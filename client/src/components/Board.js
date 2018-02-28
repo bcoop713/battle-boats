@@ -73,7 +73,34 @@ function MyBoard({
   );
 
   const grid = map(Row, matrix);
-  return <div className={Styles.board}>{grid}</div>;
+  const ordsToDivs = ord => <div>{ord}</div>;
+  const xAxisDisplay = map(ordsToDivs, [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H'
+  ]);
+  const yAxisDisplay = map(ordsToDivs, [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8'
+  ]);
+  return (
+    <div className={Styles['board-container']}>
+      <div className={Styles['x-axis']}>{xAxisDisplay}</div>
+      <div className={Styles['y-axis']}>{yAxisDisplay}</div>
+      <div className={Styles.board}>{grid}</div>
+    </div>
+  );
 }
 
 export default MyBoard;

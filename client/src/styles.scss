@@ -1,5 +1,7 @@
+.board-container {
+    position:relative;
+}
 .board {
-  padding: 10px;
   user-select: none;
   cursor: pointer;
 }
@@ -21,5 +23,30 @@
     background: red;
 }
 .has-miss {
-    background: white
+    background: white;
+}
+
+.y-axis{
+    position:absolute;
+    left: -30px;
+    top: 0;
+}
+.y-axis > div {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height:30px;
+}
+
+.x-axis{
+    width: 240px;
+    display:flex;
+    position:absolute;
+    bottom: -30px;
+    left: 0;
+}
+.x-axis > div {
+    width:30px;
+    height:30px;
+    text-align:center;
 }
