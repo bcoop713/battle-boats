@@ -5,6 +5,7 @@ import { Success, Failure } from 'folktale/validation';
 import {
   map,
   concat,
+  partition,
   contains,
   append,
   head,
@@ -18,21 +19,36 @@ const initialState = socket => ({
   loading: true
 });
 
-const initialLoadedState = (storedState, socket) => ({
-  loading: false,
-  player: storedState.player,
-  socket: socket,
-  boatsWaiting: storedState.boatsWaiting,
-  boatPlacementCoords: [],
-  boatCoords: storedState.boatCoords,
-  errors: Success(),
-  instructions: Maybe.Nothing(),
-  sentHits: [],
-  sentMisses: [],
-  receivedHits: [],
-  receivedMisses: [],
-  allBoatsPlaced: false
-});
+const initialLoadedState = (storedState, socket) => {
+  const partitionedHits = partition(
+    hit => hit.enemyNumber === storedState.player.number,
+    storedState.hits
+  );
+  const partitionedMisses = partition(
+    miss => miss.enemyNumber === storedState.player.number,
+    storedState.misses
+  );
+  const receivedHits = map(hit => hit.coord, partitionedHits[0]);
+  const sentHits = map(hit => hit.coord, partitionedHits[1]);
+  const receivedMisses = map(miss => miss.coord, partitionedMisses[0]);
+  const sentMisses = map(miss => miss.coord, partitionedMisses[1]);
+
+  return {
+    loading: false,
+    player: storedState.player,
+    socket: socket,
+    boatsWaiting: storedState.boatsWaiting,
+    boatPlacementCoords: [],
+    boatCoords: storedState.boatCoords,
+    errors: Success(),
+    instructions: Maybe.Nothing(),
+    sentHits: sentHits,
+    sentMisses: sentMisses,
+    receivedHits: receivedHits,
+    receivedMisses: receivedMisses,
+    allBoatsPlaced: storedState.allBoatsPlaced
+  };
+};
 
 function validateCoords(coords, boatsWaiting, boatCoords) {
   if (coords && coords.length === 2) {

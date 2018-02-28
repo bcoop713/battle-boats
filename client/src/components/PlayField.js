@@ -5,7 +5,7 @@ import EnemyBoard from '../containers/EnemyBoard.js';
 function PlayField() {
   return (
     <div className="container">
-      <div id="board-container" className="columns">
+      <div id="playgfield-container" className="columns">
         <div className="column">
           <MyBoard />
         </div>

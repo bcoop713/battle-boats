@@ -70,7 +70,9 @@ function handleNewPlayer(state) {
       actions.Initial(
         initialClientState.boatsWaiting,
         initialClientState.boatCoords,
-        newPlayer
+        newPlayer,
+        hits,
+        misses
       )
     );
     return { messageOut, newState };
@@ -80,8 +82,17 @@ function handleNewPlayer(state) {
 function handleReturingPlayer(playerNumber, state) {
   const returningPlayer = { number: playerNumber };
   const myState = state.clientState[playerNumber - 1];
+  const boatsWaiting =
+    state.clientState[1].boatsWaiting + state.clientState[1].boatsWaiting;
   const messageOut = JSON.stringify(
-    actions.Initial(myState.boatsWaiting, myState.boatCoords, returningPlayer)
+    actions.Initial(
+      myState.boatsWaiting,
+      myState.boatCoords,
+      returningPlayer,
+      state.hits,
+      state.misses,
+      boatsWaiting === 0
+    )
   );
   return { messageOut, newState: state };
 }

@@ -22,8 +22,22 @@ function actionMapper(ServerActionResult) {
 
   // map server actions to client actions
   return serverAction.matchWith({
-    Initial: ({ player, boatsWaiting, boatCoords }) =>
-      actions.Initial(player, boatsWaiting, boatCoords),
+    Initial: ({
+      player,
+      boatsWaiting,
+      boatCoords,
+      hits,
+      misses,
+      allBoatsPlaced
+    }) =>
+      actions.Initial(
+        player,
+        boatsWaiting,
+        boatCoords,
+        hits,
+        misses,
+        allBoatsPlaced
+      ),
     BoatPlacementSuccess: ({ coords }) => actions.BoatPlacementSuccess(coords),
     AttackMissed: ({ enemyNumber, coord }) =>
       actions.AttackMissed(enemyNumber, coord),
