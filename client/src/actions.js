@@ -22,6 +22,9 @@ const action = union('Action', {
   AttackHit(enemyNumber, coord) {
     return { enemyNumber, coord };
   },
+  StartAttackPhase() {
+    return {};
+  },
   NoOp() {
     return {};
   }

@@ -29,6 +29,7 @@ function actionMapper(ServerActionResult) {
       actions.AttackMissed(enemyNumber, coord),
     AttackHit: ({ enemyNumber, coord }) =>
       actions.AttackHit(enemyNumber, coord),
+    StartAttackPhase: () => actions.StartAttackPhase(),
     NoOp: () => actions.NoOp()
   });
 }

@@ -4,8 +4,8 @@ import MyBoardComp from '../components/Board.js';
 import { connect } from 'react-redux';
 import actions from '../actions.js';
 
-const mapStateToProps = ({ boatCoords, recievedHits, recievedMisses }) => {
-  return { boatCoords, hits: recievedHits, misses: recievedMisses };
+const mapStateToProps = ({ boatCoords, receivedHits, receivedMisses }) => {
+  return { boatCoords, hits: receivedHits, misses: receivedMisses };
 };
 
 const mapDispatchToProps = dispatch => {

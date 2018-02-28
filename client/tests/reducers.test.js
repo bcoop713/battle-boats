@@ -60,7 +60,8 @@ describe('validateAttack', () => {
       sentMisses,
       receivedHits,
       receivedHits,
-      1
+      1,
+      true
     );
     expect(Failure.hasInstance(validationResult)).toBeTruthy();
   });
@@ -77,7 +78,8 @@ describe('validateAttack', () => {
       sentMisses,
       receivedHits,
       receivedMisses,
-      playerNumber
+      playerNumber,
+      true
     );
     expect(Failure.hasInstance(validationResult)).toBeTruthy();
   });
@@ -94,7 +96,26 @@ describe('validateAttack', () => {
       sentMisses,
       receivedHits,
       receivedMisses,
-      playerNumber
+      playerNumber,
+      true
+    );
+    expect(Failure.hasInstance(validationResult)).toBeTruthy();
+  });
+  it('should disalow attacking before attack phase', () => {
+    const sentHits = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const sentMisses = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const receivedHits = [{ x: 1, y: 1 }, { x: 3, y: 1 }];
+    const receivedMisses = [{ x: 7, y: 7 }, { x: 5, y: 5 }];
+    const playerNumber = 1;
+    const attackCoord = { x: 8, y: 8 };
+    const validationResult = validateAttack(
+      attackCoord,
+      sentHits,
+      sentMisses,
+      receivedHits,
+      receivedMisses,
+      playerNumber,
+      false
     );
     expect(Failure.hasInstance(validationResult)).toBeTruthy();
   });
@@ -111,7 +132,8 @@ describe('validateAttack', () => {
       sentMisses,
       receivedHits,
       receivedMisses,
-      playerNumber
+      playerNumber,
+      true
     );
     expect(Success.hasInstance(validationResult)).toBeTruthy();
   });

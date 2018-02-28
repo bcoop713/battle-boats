@@ -29,8 +29,9 @@ const initialLoadedState = (storedState, socket) => ({
   instructions: Maybe.Nothing(),
   sentHits: [],
   sentMisses: [],
-  recievedHits: [],
-  recievedMisses: []
+  receivedHits: [],
+  receivedMisses: [],
+  allBoatsPlaced: false
 });
 
 function validateCoords(coords, boatsWaiting, boatCoords) {
@@ -76,13 +77,19 @@ function validateAttack(
   sentMisses,
   receivedHits,
   receivedMisses,
-  playerNumber
+  playerNumber,
+  allBoatsPlaced
 ) {
   const allAttacksSent = concat(sentHits, sentMisses);
   const uniqueAttack = () => {
     return !contains(coord, allAttacksSent)
       ? Success()
       : Failure(['You already attacked this spot']);
+  };
+  const attackPhase = () => {
+    return allBoatsPlaced
+      ? Success()
+      : Failure(['Waiting for all players to finish placing their boats']);
   };
   const myTurn = () => {
     const allAttacks = concat(
@@ -95,7 +102,8 @@ function validateAttack(
   };
   return Success()
     .concat(uniqueAttack())
-    .concat(myTurn());
+    .concat(myTurn())
+    .concat(attackPhase());
 }
 
 // Boat was represented as 2 points, this transforms that into 3 segments
@@ -162,8 +170,10 @@ function reducers(state, action) {
         coord,
         state.sentHits,
         state.sentMisses,
-        state.recievedHits,
-        state.recievedMisses
+        state.receivedHits,
+        state.receivedMisses,
+        state.player.number,
+        state.allBoatsPlaced
       );
       return validAttack.matchWith({
         Success: () => {
@@ -179,7 +189,7 @@ function reducers(state, action) {
     AttackHit: ({ enemyNumber, coord }) => {
       const newState =
         enemyNumber === state.player.number
-          ? { ...state, recievedHits: append(coord, state.recievedHits) }
+          ? { ...state, receivedHits: append(coord, state.receivedHits) }
           : { ...state, sentHits: append(coord, state.sentHits) };
 
       return loop(newState, Cmd.none);
@@ -187,10 +197,13 @@ function reducers(state, action) {
     AttackMissed: ({ enemyNumber, coord }) => {
       const newState =
         enemyNumber === state.player.number
-          ? { ...state, recievedMisses: append(coord, state.recievedMisses) }
+          ? { ...state, receivedMisses: append(coord, state.receivedMisses) }
           : { ...state, sentMisses: append(coord, state.sentMisses) };
 
       return loop(newState, Cmd.none);
+    },
+    StartAttackPhase: () => {
+      return loop({ ...state, allBoatsPlaced: true }, Cmd.none);
     },
     NoOp: () => state
   });

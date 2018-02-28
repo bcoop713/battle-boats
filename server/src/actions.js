@@ -13,6 +13,9 @@ const actions = union('ServerAction', {
   AttackMissed(enemyNumber, coord) {
     return { enemyNumber, coord };
   },
+  StartAttackPhase() {
+    return {};
+  },
   NoOp() {
     return {};
   }

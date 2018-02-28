@@ -42,7 +42,6 @@ wss.on('connection', function connection(ws, req) {
 function handleMessageOut(ws, wss, { responseMsg, broadcastMsg }) {
   ws.send(JSON.stringify(responseMsg));
   if (broadcastMsg) {
-    console.log('BROADCAST MSG', broadcastMsg);
     wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify(broadcastMsg));
@@ -127,7 +126,15 @@ function mapToActions(action, state) {
       );
       const newState = { ...state, clientState: newClientState };
       const responseMsg = actions.BoatPlacementSuccess(boatCoords);
-      return { newState, responseMsg };
+
+      // If all boats are placed, broadcast start attack phase
+      const broadcastMsg =
+        newState.clientState[0].boatsWaiting +
+          newState.clientState[1].boatsWaiting ===
+        0
+          ? actions.StartAttackPhase()
+          : null;
+      return { newState, responseMsg, broadcastMsg };
     },
     SendAttack: ({ enemyNumber, coord }) => {
       const enemyBoatCoords = state.clientState[enemyNumber - 1].boatCoords;
