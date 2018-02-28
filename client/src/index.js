@@ -14,8 +14,9 @@ import Styles from './styles.scss';
 require('bulma/bulma.sass');
 
 const enhancer = compose(applyMiddleware(flMiddleware, logger), install());
-
-const store = createStore(flReducer(reducers), initialState, enhancer);
+const socket = new WebSocket(socketURL());
+console.log(socket);
+const store = createStore(flReducer(reducers), initialState(socket), enhancer);
 
 function socketURL() {
   const base = 'ws://localhost:9000';
@@ -26,7 +27,6 @@ function socketURL() {
   });
 }
 
-const socket = new WebSocket(socketURL());
 socket.addEventListener('message', event => {
   fromSocketHandler(event, store);
 });

@@ -1,11 +1,11 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import MyBoardComp from "../components/Board.js";
-import { connect } from "react-redux";
-import actions from "../actions.js";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import MyBoardComp from '../components/Board.js';
+import { connect } from 'react-redux';
+import actions from '../actions.js';
 
-const mapStateToProps = state => {
-  return state;
+const mapStateToProps = ({ boatCoords }) => {
+  return { boatCoords };
 };
 
 const mapDispatchToProps = dispatch => {

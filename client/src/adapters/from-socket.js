@@ -22,7 +22,9 @@ function actionMapper(ServerActionResult) {
 
   // map server actions to client actions
   return serverAction.matchWith({
-    Initial: ({ player }) => actions.Initial(player),
+    Initial: ({ player, boatsWaiting, boatCoords }) =>
+      actions.Initial(player, boatsWaiting, boatCoords),
+    BoatPlacementSuccess: ({ coords }) => actions.BoatPlacementSuccess(coords),
     NoOp: () => actions.NoOp()
   });
 }

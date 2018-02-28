@@ -1,12 +1,18 @@
 .board {
   padding: 10px;
   user-select: none;
+  cursor: pointer;
 }
 .row {
   display: flex;
 }
 .cell {
-  background: red;
+  background: blue;
   width: 30px;
   height: 30px;
+  border: 1px solid black;
+}
+
+.has-ship {
+    background: gray;
 }

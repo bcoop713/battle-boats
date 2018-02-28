@@ -1,19 +1,21 @@
 import { loop, Cmd } from 'redux-loop';
-import { storeLocally } from './commands.js';
+import { storeLocally, msgToServer, sendToServer } from './commands.js';
 import Maybe from 'folktale/maybe';
 import { Success, Failure } from 'folktale/validation';
 import { map, concat, head, insert, flatten, intersection } from 'ramda';
 
-const initialState = {
+const initialState = socket => ({
+  socket,
   loading: true
-};
+});
 
-const initialLoadedState = player => ({
+const initialLoadedState = (storedState, socket) => ({
   loading: false,
-  player: player,
-  boatsWaiting: 5,
+  player: storedState.player,
+  socket: socket,
+  boatsWaiting: storedState.boatsWaiting,
   boatPlacementCoords: [],
-  boatCoords: [],
+  boatCoords: storedState.boatCoords,
   errors: Success()
 });
 
@@ -67,10 +69,12 @@ function reducers(state, action) {
     return state;
   }
   return action.matchWith({
-    Initial: ({ player }) => {
+    Initial: storedState => {
       return loop(
-        initialLoadedState(player),
-        Cmd.run(storeLocally, { args: ['playerNumber', player.number] })
+        initialLoadedState(storedState, state.socket),
+        Cmd.run(storeLocally, {
+          args: ['playerNumber', storedState.player.number]
+        })
       );
     },
     BoatPlacementStart: ({ coord }) => {
@@ -85,20 +89,30 @@ function reducers(state, action) {
         state.boatCoords
       );
       return validCoords.matchWith({
-        Success: () =>
-          loop(
-            {
-              ...state,
-              boatPlacementCoords: [],
-              boatsWaiting: state.boatsWaiting - 1,
-              boatCoords: concat(state.boatCoords, [
-                getAllSegments(updatedCoords)
-              ])
-            },
-            Cmd.none
-          ),
+        Success: () => {
+          const fullBoatCoords = getAllSegments(updatedCoords);
+          const messageOut = msgToServer.PlaceBoat(
+            state.player.number,
+            fullBoatCoords
+          );
+          return loop(
+            state,
+            Cmd.run(sendToServer, { args: [state.socket, messageOut] })
+          );
+        },
         Failure: _ => loop({ ...state, errors: validCoords }, Cmd.none)
       });
+    },
+    BoatPlacementSuccess: ({ coord }) => {
+      return loop(
+        {
+          ...state,
+          boatPlacementCoords: [],
+          boatsWaiting: state.boatsWaiting - 1,
+          boatCoords: concat(state.boatCoords, [coord])
+        },
+        Cmd.none
+      );
     },
     NoOp: () => state
   });

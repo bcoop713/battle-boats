@@ -1,8 +1,11 @@
 import { union, derivations } from 'folktale/adt/union';
 
 const actions = union('ServerAction', {
-  Initial(player) {
-    return { player };
+  Initial(boatsWaiting, boatCoords, player) {
+    return { boatsWaiting, boatCoords, player };
+  },
+  BoatPlacementSuccess(coords) {
+    return { coords };
   },
   NoOp() {
     return {};
