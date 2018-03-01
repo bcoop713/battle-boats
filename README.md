@@ -1,8 +1,11 @@
 # Battle Boats
 ### To Run:
 Clone Repo
+
 run `yarn install` in `/server` and `/dev`
+
 run `yarn dev` in `/server` and `/dev`
+
 Visit `http://localhost:3000` in browser
 
 ### Notes
