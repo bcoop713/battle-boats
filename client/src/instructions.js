@@ -27,7 +27,7 @@ function nextInstruction({
 
 const instructions = {
   PlaceBoats(boats) {
-    return `Place all your boats to start playing: ${boats} Boats Remaining`;
+    return `Place all your boats by clicking and dragging: ${boats} Boats Remaining`;
   },
   Waiting() {
     return 'Waiting for your opponent';

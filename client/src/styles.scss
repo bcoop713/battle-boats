@@ -14,21 +14,29 @@
   display: flex;
 }
 .cell {
-  background: blue;
+  background: hsl(204, 86%, 53%);
   width: 30px;
   height: 30px;
-  border: 1px solid black;
+  border: 2px solid white;
+  border-radius: 4px;
 }
 
 .has-ship {
-    background: gray;
+    background: hsl(0, 0%, 21%);
+    border:1px solid hsl(0, 0%, 21%);
+    border-radius: 0px;
 }
 
+.has-hit.has-ship {
+    background: hsl(348, 100%, 61%);
+    border:3px solid hsl(0, 0%, 21%);
+}
 .has-hit {
-    background: red;
+    background: hsl(348, 100%, 61%);
 }
 .has-miss {
     background: white;
+    border: 3px solid hsl(204, 86%, 53%);
 }
 
 .y-axis{

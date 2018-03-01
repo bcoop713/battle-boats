@@ -7,11 +7,12 @@ function Header({ player, instructions, restart }) {
         <div className="container">
           <h1 className="title">Battle Boats</h1>
           <h2 className="subtitle">Welcome Player {player.number}</h2>
-          <p>{instructions}</p>
+          <p className="subtitle">{instructions}</p>
           <button className="button is-info" onClick={restart}>
             New Game
           </button>
         </div>
+        <div className="container" />
       </div>
     </section>
   );
