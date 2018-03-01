@@ -1,6 +1,6 @@
 import React from 'react';
 import Styles from '../styles.scss';
-import { map, any, equals, flatten } from 'ramda';
+import { addIndex, map, any, equals, flatten } from 'ramda';
 
 function Cell(
   boatPlacementEnd,
@@ -39,8 +39,12 @@ function Cell(
   );
 }
 
-function Row(row) {
-  return <div className={Styles.row}>{row}</div>;
+function Row(row, index) {
+  return (
+    <div className={Styles.row} key={index}>
+      {row}
+    </div>
+  );
 }
 
 function MyBoard({
@@ -72,8 +76,8 @@ function MyBoard({
     yAxis
   );
 
-  const grid = map(Row, matrix);
-  const ordsToDivs = ord => <div>{ord}</div>;
+  const grid = addIndex(map)(Row, matrix);
+  const ordsToDivs = ord => <div key={ord}>{ord}</div>;
   const xAxisDisplay = map(ordsToDivs, [
     'A',
     'B',

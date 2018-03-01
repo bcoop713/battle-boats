@@ -18,7 +18,7 @@ function nextInstruction({
     return instructions.PlaceBoats(boatsWaiting);
   } else if (allBoatsPlaced && !myTurn) {
     return instructions.Waiting();
-  } else if (myTurn) {
+  } else if (myTurn && allBoatsPlaced) {
     return instructions.YourTurn();
   } else {
     return instructions.Waiting();

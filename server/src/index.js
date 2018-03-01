@@ -71,8 +71,8 @@ function handleNewPlayer(state) {
         initialClientState.boatsWaiting,
         initialClientState.boatCoords,
         newPlayer,
-        hits,
-        misses
+        [],
+        []
       )
     );
     return { messageOut, newState };

@@ -2,7 +2,6 @@ import React from 'react';
 import { map } from 'ramda';
 
 function ErrorModal({ errors, close }) {
-  console.log(errors);
   return errors.matchWith({
     Success: () => '',
     Failure: ({ value }) => renderModal(value, close)

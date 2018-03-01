@@ -40,6 +40,19 @@ describe('nextInstruction', () => {
     const nextIns = nextInstruction(state);
     expect(nextIns).toBe(instructions.YourTurn());
   });
+  it('should return Waiting after all your boats placed but before all boats are placed', () => {
+    const state = {
+      sentHits: [],
+      sentMisses: [],
+      receivedHits: [],
+      receivedMisses: [],
+      player: { number: 1 },
+      allBoatsPlaced: false,
+      boatsWaiting: 0
+    };
+    const nextIns = nextInstruction(state);
+    expect(nextIns).toBe(instructions.Waiting());
+  });
   it('should return Waiting after all boats placed and are player 2', () => {
     const state = {
       sentHits: [],

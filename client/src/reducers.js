@@ -259,7 +259,10 @@ function reducers(state, action) {
         state.player.number === 1
           ? instructions.YourTurn()
           : instructions.Waiting();
-      return loop({ ...state, allBoatsPlaced: true }, Cmd.none);
+      return loop(
+        { ...state, allBoatsPlaced: true, instructions: nextInstruction },
+        Cmd.none
+      );
     },
     CloseError: () => {
       return loop({ ...state, errors: Success() }, Cmd.none);

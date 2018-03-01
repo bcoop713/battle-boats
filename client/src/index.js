@@ -15,7 +15,6 @@ require('bulma/bulma.sass');
 
 const enhancer = compose(applyMiddleware(flMiddleware, logger), install());
 const socket = new WebSocket(socketURL());
-console.log(socket);
 const store = createStore(flReducer(reducers), initialState(socket), enhancer);
 
 function socketURL() {
