@@ -12,13 +12,14 @@ const initialClientState = {
   boatCoords: []
 };
 
-let appState = {
+const initialAppState = {
   players: [],
   clientState: [initialClientState, initialClientState],
   hits: [],
   misses: []
 };
 
+let appState = initialAppState;
 // Start the server
 wss.on('connection', function connection(ws, req) {
   const { newState, messageOut } = handleConnection(ws, req, appState);
@@ -29,7 +30,6 @@ wss.on('connection', function connection(ws, req) {
       appState
     );
     const updatedState = getUpdatedState(appState, newState);
-    console.log('x', JSON.stringify(updatedState));
     setState(updatedState);
     handleMessageOut(ws, wss, { responseMsg, broadcastMsg });
   });
@@ -159,6 +159,11 @@ function mapToActions(action, state) {
       const newState = hit
         ? { ...state, hits: R.append({ enemyNumber, coord }, state.hits) }
         : { ...state, misses: R.append({ enemyNumber, coord }, state.misses) };
+      return { newState, broadcastMsg };
+    },
+    SendRestart: () => {
+      const newState = initialAppState;
+      const broadcastMsg = actions.Initial(5, [], null, [], [], false);
       return { newState, broadcastMsg };
     }
   });

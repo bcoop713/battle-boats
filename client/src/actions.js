@@ -28,6 +28,9 @@ const action = union('Action', {
   CloseError() {
     return {};
   },
+  SendRestart() {
+    return {};
+  },
   NoOp() {
     return {};
   }

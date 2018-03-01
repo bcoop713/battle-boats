@@ -146,10 +146,15 @@ function reducers(state, action) {
   }
   return action.matchWith({
     Initial: storedState => {
+      const player = storedState.player || state.player;
+      const initialState = {
+        ...storedState,
+        player
+      };
       return loop(
-        initialLoadedState(storedState, state.socket),
+        initialLoadedState(initialState, state.socket),
         Cmd.run(storeLocally, {
-          args: ['playerNumber', storedState.player.number]
+          args: ['playerNumber', player.number]
         })
       );
     },
@@ -258,6 +263,13 @@ function reducers(state, action) {
     },
     CloseError: () => {
       return loop({ ...state, errors: Success() }, Cmd.none);
+    },
+    SendRestart: () => {
+      const messageOut = msgToServer.SendRestart();
+      return loop(
+        state,
+        Cmd.run(sendToServer, { args: [state.socket, messageOut] })
+      );
     },
     NoOp: () => state
   });

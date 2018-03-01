@@ -16,6 +16,9 @@ const msgToServer = union('MessagesOut', {
   },
   SendAttack(enemyNumber, coord) {
     return { enemyNumber, coord };
+  },
+  SendRestart() {
+    return {};
   }
 }).derive(derivations.serialization);
 
