@@ -1,5 +1,6 @@
 import { loop, Cmd } from 'redux-loop';
 import { storeLocally, msgToServer, sendToServer } from './commands.js';
+import { nextInstruction, instructions } from './instructions.js';
 import Maybe from 'folktale/maybe';
 import { Success, Failure } from 'folktale/validation';
 import {
@@ -32,7 +33,6 @@ const initialLoadedState = (storedState, socket) => {
   const sentHits = map(hit => hit.coord, partitionedHits[1]);
   const receivedMisses = map(miss => miss.coord, partitionedMisses[0]);
   const sentMisses = map(miss => miss.coord, partitionedMisses[1]);
-
   return {
     loading: false,
     player: storedState.player,
@@ -41,7 +41,15 @@ const initialLoadedState = (storedState, socket) => {
     boatPlacementCoords: [],
     boatCoords: storedState.boatCoords,
     errors: Success(),
-    instructions: Maybe.Nothing(),
+    instructions: nextInstruction({
+      sentHits,
+      sentMisses,
+      receivedMisses,
+      receivedHits,
+      player: storedState.player,
+      allBoatsPlaced: storedState.allBoatsPlaced,
+      boatsWaiting: storedState.boatsWaiting
+    }),
     sentHits: sentHits,
     sentMisses: sentMisses,
     receivedHits: receivedHits,
@@ -60,7 +68,7 @@ function validateCoords(coords, boatsWaiting, boatCoords) {
     const isHorOrVert = () => {
       return xDiff === 0 || yDiff === 0
         ? Success()
-        : Failure(['Must be placed horizontally or vertically']);
+        : Failure(['Boat must be placed horizontally or vertically']);
     };
     const isLength3 = () => {
       const xDiffAbs = Math.abs(xDiff);
@@ -105,7 +113,9 @@ function validateAttack(
   const attackPhase = () => {
     return allBoatsPlaced
       ? Success()
-      : Failure(['Waiting for all players to finish placing their boats']);
+      : Failure([
+          'You have to wait for all players to place all of their boats before you attack'
+        ]);
   };
   const myTurn = () => {
     const allAttacks = concat(
@@ -170,12 +180,17 @@ function reducers(state, action) {
       });
     },
     BoatPlacementSuccess: ({ coord }) => {
+      const nextIns = nextInstruction({
+        ...state,
+        boatsWaiting: state.boatsWaiting - 1
+      });
       return loop(
         {
           ...state,
           boatPlacementCoords: [],
           boatsWaiting: state.boatsWaiting - 1,
-          boatCoords: concat(state.boatCoords, [coord])
+          boatCoords: concat(state.boatCoords, [coord]),
+          instructions: nextIns
         },
         Cmd.none
       );
@@ -205,21 +220,44 @@ function reducers(state, action) {
     AttackHit: ({ enemyNumber, coord }) => {
       const newState =
         enemyNumber === state.player.number
-          ? { ...state, receivedHits: append(coord, state.receivedHits) }
-          : { ...state, sentHits: append(coord, state.sentHits) };
+          ? {
+              ...state,
+              receivedHits: append(coord, state.receivedHits),
+              instructions: instructions.YourTurn()
+            }
+          : {
+              ...state,
+              sentHits: append(coord, state.sentHits),
+              instructions: instructions.Waiting()
+            };
 
       return loop(newState, Cmd.none);
     },
     AttackMissed: ({ enemyNumber, coord }) => {
       const newState =
         enemyNumber === state.player.number
-          ? { ...state, receivedMisses: append(coord, state.receivedMisses) }
-          : { ...state, sentMisses: append(coord, state.sentMisses) };
+          ? {
+              ...state,
+              receivedMisses: append(coord, state.receivedMisses),
+              instructions: instructions.YourTurn()
+            }
+          : {
+              ...state,
+              sentMisses: append(coord, state.sentMisses),
+              instructions: instructions.Waiting()
+            };
 
       return loop(newState, Cmd.none);
     },
     StartAttackPhase: () => {
+      const nextInstruction =
+        state.player.number === 1
+          ? instructions.YourTurn()
+          : instructions.Waiting();
       return loop({ ...state, allBoatsPlaced: true }, Cmd.none);
+    },
+    CloseError: () => {
+      return loop({ ...state, errors: Success() }, Cmd.none);
     },
     NoOp: () => state
   });

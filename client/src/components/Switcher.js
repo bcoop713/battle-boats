@@ -1,6 +1,7 @@
 import React from 'react';
 import PlayField from './PlayField.js';
 import Header from '../containers/Header.js';
+import ErrorModal from '../containers/ErrorModal.js';
 
 const Splash = ({ loading }) => {
   if (loading) {
@@ -10,6 +11,7 @@ const Splash = ({ loading }) => {
       <div>
         <Header />
         <PlayField />
+        <ErrorModal />
       </div>
     );
   }

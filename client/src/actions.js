@@ -25,6 +25,9 @@ const action = union('Action', {
   StartAttackPhase() {
     return {};
   },
+  CloseError() {
+    return {};
+  },
   NoOp() {
     return {};
   }
