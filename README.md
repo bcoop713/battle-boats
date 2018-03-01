@@ -2,9 +2,9 @@
 ### To Run:
 Clone Repo
 
-run `yarn install` in `/server` and `/dev`
+run `yarn install` in `/server` and `/client`
 
-run `yarn dev` in `/server` and `/dev`
+run `yarn dev` in `/server` and `/client`
 
 Visit `http://localhost:3000` in browser
 
